@@ -11,8 +11,9 @@ import { HttpClientModule } from '@angular/common/http';
 import { TaskFormComponent } from './components/task-form/task-form.component';
 
 const routes: Routes = [
-  { path: '', component: TaskListComponent }, // Página principal (lista de tareas)
-  { path: 'form', component: TaskFormComponent }, // Página del formulario
+  { path: '', component: TaskListComponent },
+  { path: 'crear', component: TaskFormComponent }, 
+  { path: 'editar/:id', component: TaskFormComponent }, 
 ];
 
 @NgModule({

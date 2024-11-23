@@ -5,7 +5,7 @@
     
     <hr class="my-4" />
 
-    <form (ngSubmit)="addTask()" class="card p-4" id="task-form">
+    <form (ngSubmit)="saveTask()" class="card p-4" id="task-form">
       <div class="form-group mb-3">
         <label for="title" class="form-label">Título:</label>
         <input
@@ -42,7 +42,7 @@
 
       <div class="d-grid gap-2 d-md-flex justify-content-md-end">
         <a class="btn btn-outline-danger" routerLink="/" routerLinkActive="active">Cancelar</a>
-        <button type="submit" class="btn btn-primary">Guardar</button>
+        <button type="submit" class="btn btn-primary">{{ isEditMode ? 'Guardar cambios' : 'Crear' }}</button>
       </div>
     </form>
   </div>

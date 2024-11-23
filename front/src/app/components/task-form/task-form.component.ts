@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { TaskService } from 'src/app/services/task.service';
 
 @Component({
@@ -8,30 +8,46 @@ import { TaskService } from 'src/app/services/task.service';
   styleUrls: ['./task-form.component.css'],
 })
 export class TaskFormComponent {
-  task = {
+  task: {
+    id?: number;
+    title: string;
+    description: string;
+    completed: boolean;
+  } = {
     title: '',
     description: '',
     completed: false,
   };
 
-  constructor(private taskService: TaskService, private router: Router) {}
+  isEditMode: boolean = false;
 
-  addTask(): void {
-    if (this.task.title.trim() && this.task.description.trim()) {
-      // Envía la tarea al servicio
-      this.taskService.addTask(this.task).subscribe(() => {
-        // Limpia el formulario después de agregar
-        this.task = {
-          title: '',
-          description: '',
-          completed: false,
-        };
+  constructor(
+    private taskService: TaskService, 
+    private router: Router,
+    private route: ActivatedRoute
+  ) {}
 
-        // Redirige a la lista de tareas
-        this.router.navigate(['/']);
+  ngOnInit(): void {
+    const taskId = this.route.snapshot.paramMap.get('id');
+    if (taskId) {
+      this.isEditMode = true;
+      this.taskService.getTaskById(taskId).subscribe((data) => {
+        this.task = { ...data };
       });
-    } else {
-      alert('Por favor, completa todos los campos antes de guardar.');
+    }
+  }
+
+  saveTask(): void {
+    if (this.task.title.trim() && this.task.description.trim()) {
+      if (this.isEditMode) {
+        this.taskService.updateTask(this.task).subscribe(() => {
+          this.router.navigate(['/']);
+        });
+      } else {
+        this.taskService.addTask(this.task).subscribe(() => {
+          this.router.navigate(['/']);
+        });
+      }
     }
   }
 }

@@ -15,7 +15,7 @@
 <div class="task-list row justify-content-center py-5 flex">
   <h2 class="d-flex justify-content-between">
     Lista de Tareas 
-    <a class="nav-link" routerLink="/form" routerLinkActive="active" class="btn btn-outline-primary">
+    <a class="nav-link" routerLink="/crear" routerLinkActive="active" class="btn btn-outline-primary">
       <i class="bi bi-plus-circle"></i>
       Crear nueva Tarea
     </a>
@@ -29,7 +29,10 @@
   <div class="card col-10 m-2 task-card" *ngFor="let task of tasks" [ngClass]="{'completed': task.completed, '': !task.completed}">
     <div class="card-body d-flex flex-column justify-content-between">
       <div>
-        <h4 class="card-title">{{ task.title }}</h4>
+        <div class="d-flex justify-content-between">
+          <h4 class="card-title">{{ task.title }}</h4>
+          <button class="btn " *ngIf="task.id !== undefined" (click)="editTask(task.id)"><i class="bi bi-pencil"></i></button>
+        </div>
         <p>{{ task.description }}</p>
       </div>
 
@@ -38,8 +41,7 @@
           <i class="bi bi-check-circle"></i>
           {{ task.completed ? 'Completado' : 'Completar' }}
         </button>
-    
-        <button (click)="openDeleteModal(task.id, deleteModal)" class="btn btn-danger"><i class="bi bi-trash"></i></button>
+        <button *ngIf="task.id !== undefined" (click)="openDeleteModal(task.id, deleteModal)" class="btn btn-danger"><i class="bi bi-trash"></i></button>
       </div>
     </div>
   </div>

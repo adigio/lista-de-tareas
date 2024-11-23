@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 export interface Task {
-  id: number;
+  id?: number;
   title: string;
   description: string;
   completed: boolean;
@@ -21,12 +21,16 @@ export class TaskService {
     return this.http.get<Task[]>(this.apiUrl);
   }
 
+  getTaskById(id: string): Observable<any> {
+    return this.http.get(`${this.apiUrl}/${id}`);
+  }
+
   addTask(task: Omit<Task, 'id'>): Observable<Task> {
     return this.http.post<Task>(this.apiUrl, task);
   }
 
-  updateTask(id: number, task: Partial<Task>): Observable<Task> {
-    return this.http.patch<Task>(`${this.apiUrl}/${id}`, task);
+  updateTask(task: Partial<Task>): Observable<Task> {
+    return this.http.patch<Task>(`${this.apiUrl}/${task.id}`, task);
   }
 
   deleteTask(id: number): Observable<void> {

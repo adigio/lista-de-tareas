@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Task, TaskService } from 'src/app/services/task.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-task-list',
@@ -11,7 +12,7 @@ export class TaskListComponent implements OnInit {
   tasks: Task[] = [];
   taskToDelete: number | null = null;
 
-  constructor(private taskService: TaskService, private modalService: NgbModal) {}
+  constructor(private taskService: TaskService, private modalService: NgbModal, private router: Router) {}
 
   ngOnInit(): void {
     this.loadTasks();
@@ -34,18 +35,22 @@ export class TaskListComponent implements OnInit {
     });
   }
 
+  editTask(id: number): void {
+    this.router.navigate([`/editar/${id}`]);
+  }
+
   confirmDelete(modal: any): void {
     if (this.taskToDelete !== null) {
       this.taskService.deleteTask(this.taskToDelete).subscribe(() => {
-        this.tasks = this.tasks.filter((task) => task.id !== this.taskToDelete); // Elimina la tarea de la lista
-        this.taskToDelete = null; // Resetea la ID seleccionada
-        modal.close('delete confirmed'); // Cierra el modal
+        this.tasks = this.tasks.filter((task) => task.id !== this.taskToDelete);
+        this.taskToDelete = null;
+        modal.close('delete confirmed');
       });
     }
   }
 
   toggleCompletion(task: Task): void {
-    this.taskService.updateTask(task.id, { completed: !task.completed }).subscribe(() => {
+    this.taskService.updateTask({ id: task.id, completed: !task.completed }).subscribe(() => {
       task.completed = !task.completed;
     });
   }
