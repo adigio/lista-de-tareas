@@ -1,54 +1,75 @@
-var express = require('express');
-var router = express.Router();
+const express = require('express');
+const Task = require('../models/Task');
+const router = express.Router();
 
-let tasks = [
-    {
-      id:1,
-      title: 'Terminar la carrera',
-      description: 'Hay que terminar la carrera',
-      completed: false
+router.get('/', async (req, res, next) => {
+  try {
+    const tasks = await Task.findAll();
+    res.json(tasks);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+router.get('/:id', async (req, res) => {
+  try {
+    const task = await Task.findByPk(req.params.id);
+
+    if (task) {
+      res.json(task);
+    } else {
+      res.status(404).json({ message: 'Tarea no encontrada' });
     }
-];
-
-router.get('/', function(req, res, next) {
-  res.json(tasks);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
 });
 
-router.get('/:id', (req, res) => {
-  const task = tasks.find(t => t.id === parseInt(req.params.id));
-  if (!task) return res.status(404).json({ error: 'Task not found' });
-  res.json(task);
-});
-
-router.post('/', function(req, res, next) {
+router.post('/', async (req, res, next) => {
   const { title, description, completed } = req.body;
-  const newTask = { id: tasks.length + 1, description, title, completed: completed || false };
-  tasks.push(newTask);
-  res.status(201).json(newTask);
+
+  try {
+    const newTask = await Task.create({ title, description, completed });
+    res.status(201).json(newTask);
+  } catch (err) {
+    res.status(400).json({ message: err.message });
+  }
 });
 
-router.patch('/:id', (req, res) => {
-  const { id } = req.params;
-  const { description, title, completed } = req.body;
+router.patch('/:id', async (req, res) => {
+  const { title, description, completed } = req.body;
 
-  const task = tasks.find(t => t.id === parseInt(id));
-  if (!task) return res.status(404).json({ error: 'Task not found' });
+  try {
+    const task = await Task.findByPk(req.params.id);
 
-  if (description !== undefined) task.description = description;
-  if (title !== undefined) task.title = title;
-  if (completed !== undefined) task.completed = completed;
+    if (task) {
+      task.title = title || task.title;
+      task.description = description || task.description;
+      task.completed = completed !== undefined ? completed : task.completed;
 
-  res.json(task);
+      await task.save();
+      res.json(task);
+    } else {
+      res.status(404).json({ message: 'Tarea no encontrada' });
+    }
+  } catch (err) {
+    res.status(400).json({ message: err.message });
+  }
 });
 
-router.delete('/:id', (req, res) => {
-  const { id } = req.params;
-  const taskIndex = tasks.findIndex(t => t.id === parseInt(id));
+router.delete('/:id', async (req, res) => {
+  try {
+    const task = await Task.findByPk(req.params.id);
 
-  if (taskIndex === -1) return res.status(404).json({ error: 'Task not found' });
-
-  tasks.splice(taskIndex, 1);
-  res.status(204).send();
+    if (task) {
+      await task.destroy();
+      res.status(204).json({ message: 'Tarea eliminada exitosamente' });
+    } else {
+      res.status(404).json({ message: 'No se pudo encontrar la tarea con ese ID' });
+    }
+  } catch (err) {
+    res.status(400).json({ message: err.message });
+  }
 });
 
 
