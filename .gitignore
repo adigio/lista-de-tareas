@@ -1,0 +1,44 @@
+# Node.js (Express.js backend)
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.env
+.DS_Store
+
+# Logs
+logs
+*.log
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# Runtime data
+/tmp
+*.swp
+*.swo
+
+# IDEs and editors
+.idea/
+.vscode/
+*.sublime-project
+*.sublime-workspace
+
+# Operating system files
+Thumbs.db
+.DS_Store
+
+# Angular (frontend)
+dist/
+.angular/
+node_modules/
+*.log
+
+# Compiled files
+*.js
+*.d.ts
+*.js.map
+
+# Environment files
+src/environments/environment*.ts
