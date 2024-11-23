@@ -1,8 +1,35 @@
-<div class="task-form">
-  <input
-    type="text"
-    [(ngModel)]="title"
-    placeholder="Nueva tarea"
-  />
-  <button (click)="addTask()">Agregar</button>
-</div>
+<h2>Agregar Nueva Tarea</h2>
+<form (ngSubmit)="addTask()">
+  <div>
+    <label for="title">Título:</label>
+    <input
+      id="title"
+      [(ngModel)]="task.title"
+      name="title"
+      required
+    />
+  </div>
+
+  <div>
+    <label for="description">Descripción:</label>
+    <textarea
+      id="description"
+      [(ngModel)]="task.description"
+      name="description"
+      required
+    ></textarea>
+  </div>
+
+  <div>
+    <label>
+      <input
+        type="checkbox"
+        [(ngModel)]="task.completed"
+        name="completed"
+      />
+      Completada
+    </label>
+  </div>
+
+  <button type="submit">Guardar</button>
+</form>
