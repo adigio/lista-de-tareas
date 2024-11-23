@@ -1,4 +1,18 @@
-<div class="task-list row flex">
+<ng-template #deleteModal let-modal>
+  <div class="modal-header">
+    <h5 class="modal-title">Confirmar eliminación</h5>
+    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('cancel')"></button>
+  </div>
+  <div class="modal-body">
+    ¿Estás seguro de que deseas eliminar esta tarea?
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-secondary" (click)="modal.dismiss('cancel')">Cancelar</button>
+    <button type="button" class="btn btn-danger" (click)="confirmDelete(modal)">Eliminar</button>
+  </div>
+</ng-template>
+
+<div class="task-list row justify-content-center py-5 flex">
   <h2 class="d-flex justify-content-between">
     Lista de Tareas 
     <a class="nav-link" routerLink="/form" routerLinkActive="active" class="btn btn-outline-primary">
@@ -12,20 +26,20 @@
 
   <hr class="my-5"/>
 
-  <div class="card col-4 m-2" *ngFor="let task of tasks">
+  <div class="card col-10 m-2" *ngFor="let task of tasks">
     <div class="card-body d-flex flex-column justify-content-between">
       <div>
         <h4 class="card-title" [ngClass]="{'text-decoration-line-through': task.completed, '': !task.completed}">{{ task.title }}</h4>
         <p [ngClass]="{'text-decoration-line-through': task.completed, '': !task.completed}">{{ task.description }}</p>
       </div>
 
-      <div class="d-flex justify-content-end">
+      <div class="d-grid gap-2 d-md-flex justify-content-md-end">
         <button (click)="toggleCompletion(task)" class="btn" [ngClass]="{'btn-success': task.completed, 'btn-primary': !task.completed}">
           <i class="bi bi-check-circle"></i>
           {{ task.completed ? 'Completado' : 'Completar' }}
         </button>
     
-        <button (click)="deleteTask(task.id)" class="btn btn-danger"><i class="bi bi-trash"></i></button>
+        <button (click)="openDeleteModal(task.id, deleteModal)" class="btn btn-danger"><i class="bi bi-trash"></i></button>
       </div>
     </div>
   </div>

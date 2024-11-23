@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Task, TaskService } from 'src/app/services/task.service';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'app-task-list',
@@ -8,8 +9,9 @@ import { Task, TaskService } from 'src/app/services/task.service';
 })
 export class TaskListComponent implements OnInit {
   tasks: Task[] = [];
+  taskToDelete: number | null = null;
 
-  constructor(private taskService: TaskService) {}
+  constructor(private taskService: TaskService, private modalService: NgbModal) {}
 
   ngOnInit(): void {
     this.loadTasks();
@@ -21,10 +23,25 @@ export class TaskListComponent implements OnInit {
     });
   }
 
+  openDeleteModal(taskId: number, content: any): void {
+    this.taskToDelete = taskId;
+    this.modalService.open(content, { ariaLabelledBy: 'deleteModalLabel' });
+  }
+
   deleteTask(id: number): void {
     this.taskService.deleteTask(id).subscribe(() => {
       this.tasks = this.tasks.filter(task => task.id !== id);
     });
+  }
+
+  confirmDelete(modal: any): void {
+    if (this.taskToDelete !== null) {
+      this.taskService.deleteTask(this.taskToDelete).subscribe(() => {
+        this.tasks = this.tasks.filter((task) => task.id !== this.taskToDelete); // Elimina la tarea de la lista
+        this.taskToDelete = null; // Resetea la ID seleccionada
+        modal.close('delete confirmed'); // Cierra el modal
+      });
+    }
   }
 
   toggleCompletion(task: Task): void {
