@@ -36,7 +36,6 @@ node_modules/
 *.log
 
 # Compiled files
-*.js
 *.d.ts
 *.js.map
 
